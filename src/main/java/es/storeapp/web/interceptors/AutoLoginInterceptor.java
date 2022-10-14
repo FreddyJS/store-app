@@ -38,7 +38,6 @@ public class AutoLoginInterceptor extends HandlerInterceptorAdapter {
                 Base64.Decoder decoder = Base64.getDecoder();
                 XMLDecoder xmlDecoder = new XMLDecoder(new ByteArrayInputStream(decoder.decode(cookieValue)));
                 UserInfo userInfo = (UserInfo) xmlDecoder.readObject();
-                System.out.println(userInfo);
                 User user = userService.findByEmail(userInfo.getEmail());
                 if (user != null && user.getPassword().equals(userInfo.getPassword())) {
                     session.setAttribute(Constants.USER_SESSION, user);

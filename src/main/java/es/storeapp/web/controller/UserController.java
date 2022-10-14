@@ -67,7 +67,7 @@ public class UserController {
                            HttpServletResponse response,
                            @CookieValue(value = Constants.PERSISTENT_USER_COOKIE, required = false) String userInfo) {
         if (userInfo != null) {
-            Cookie userCookie = new Cookie(Constants.PERSISTENT_USER_COOKIE, null);            
+            Cookie userCookie = new Cookie(Constants.PERSISTENT_USER_COOKIE, null);
             userCookie.setMaxAge(0); // remove
             response.addCookie(userCookie);
         }
