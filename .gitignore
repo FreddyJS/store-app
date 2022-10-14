@@ -3,7 +3,7 @@ target
 .settings
 
 derby.log
-server.log
+server.log*
 
 db.lck
 dbex.lck
