@@ -2,7 +2,6 @@ bin
 target
 .settings
 
-work/database/log
 derby.log
 server.log
 
