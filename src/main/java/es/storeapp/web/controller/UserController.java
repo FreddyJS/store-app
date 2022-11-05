@@ -19,6 +19,11 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Base64;
 import java.util.Locale;
+
+// For Image Validation
+import java.io.File;
+import javax.imageio.ImageIO;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -173,6 +178,15 @@ public class UserController {
         }
         User user;
         try {
+            if (userProfileForm.getImage() != null) {
+                ImageIO.read(new File(userProfileForm.getImage().getOriginalFilename()));
+            }
+        } catch (Exception e) {
+            // Tambien se podría crear el usuario sin la imagen y no devolver así el mensaje de error
+            return errorHandlingUtils.handleUnexpectedException(e, model);
+        }
+        
+        try {
             user = userService.create(userProfileForm.getName(), userProfileForm.getEmail(),
                     userProfileForm.getPassword(), userProfileForm.getAddress(),
                     userProfileForm.getImage() != null ? userProfileForm.getImage().getOriginalFilename() : null,
@@ -205,6 +219,15 @@ public class UserController {
             return Constants.USER_PROFILE_PAGE;
         }
         User updatedUser;
+        try {
+            if (userProfileForm.getImage() != null) {
+                ImageIO.read(new File(userProfileForm.getImage().getOriginalFilename()));
+            }
+        } catch (Exception e) {
+            // Tambien se podría crear el usuario sin la imagen y no devolver así el mensaje de error
+            return errorHandlingUtils.handleUnexpectedException(e, model);
+        }
+
         try {
             updatedUser = userService.update(user.getUserId(), userProfileForm.getName(), userProfileForm.getEmail(),
                     userProfileForm.getAddress(),
