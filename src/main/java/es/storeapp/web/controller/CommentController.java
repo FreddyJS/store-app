@@ -4,6 +4,7 @@ import es.storeapp.business.entities.Comment;
 import es.storeapp.business.entities.User;
 import es.storeapp.business.exceptions.InstanceNotFoundException;
 import es.storeapp.business.services.ProductService;
+import es.storeapp.business.utils.Html;
 import es.storeapp.common.Constants;
 import es.storeapp.web.exceptions.ErrorHandlingUtils;
 import es.storeapp.web.forms.CommentForm;
@@ -70,6 +71,7 @@ public class CommentController {
                                   Locale locale, 
                                   Model model) {
         try {
+            commentForm.setText(Html.escape(commentForm.getText()));
             if (commentForm.getRating() < 0) {
                 commentForm.setRating(0);
             } else if (commentForm.getRating() > 5) {
