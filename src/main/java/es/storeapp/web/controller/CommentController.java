@@ -70,6 +70,12 @@ public class CommentController {
                                   Locale locale, 
                                   Model model) {
         try {
+            if (commentForm.getRating() < 0) {
+                commentForm.setRating(0);
+            } else if (commentForm.getRating() > 5) {
+                commentForm.setRating(5);
+            }
+
             productService.comment(user, commentForm.getProductId(), commentForm.getText(), commentForm.getRating());
             String message = messageSource.getMessage(Constants.PRODUCT_COMMENT_CREATED, new Object[0], locale);
             redirectAttributes.addFlashAttribute(Constants.SUCCESS_MESSAGE, message);
