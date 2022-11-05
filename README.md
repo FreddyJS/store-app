@@ -14,3 +14,4 @@ To Fix: :x:
 * **Comment Rating** Fixed rating not between 0 and 5 :heavy_check_mark:
 * **Arbitrary File Upload** Fixed uploads of no images in UserController create and update endpoints :heavy_check_mark:
 * **JS Injection in Comments** :heavy_check_mark:
+* **Orders** Any user can check the orders of others :heavy_check_mark:
