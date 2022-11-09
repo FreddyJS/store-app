@@ -76,7 +76,7 @@ public class OrderController {
                 return Constants.SEND_REDIRECT + Constants.ORDERS_ENDPOINT;
             }
         } catch (InstanceNotFoundException ex) {
-            return errorHandlingUtils.handleInstanceNotFoundException(ex, model, locale);
+            return Constants.SEND_REDIRECT + Constants.ORDERS_ENDPOINT;
         }
         return Constants.ORDER_PAGE;
     }
