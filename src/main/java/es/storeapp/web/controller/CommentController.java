@@ -3,6 +3,7 @@ package es.storeapp.web.controller;
 import es.storeapp.business.entities.Comment;
 import es.storeapp.business.entities.User;
 import es.storeapp.business.exceptions.InstanceNotFoundException;
+import es.storeapp.business.repositories.OrderLineRepository;
 import es.storeapp.business.services.ProductService;
 import es.storeapp.business.utils.Html;
 import es.storeapp.common.Constants;
@@ -34,6 +35,9 @@ public class CommentController {
     private ProductService productService;
 
     @Autowired
+    private OrderLineRepository orderLineRepository;
+
+    @Autowired
     private MessageSource messageSource;
     
     @Autowired
@@ -48,6 +52,11 @@ public class CommentController {
         commentForm.setProductId(id);
         model.addAttribute(Constants.COMMENT_FORM, commentForm);
         try {
+            boolean buyed = orderLineRepository.findIfUserBuyProduct(user.getUserId(), commentForm.getProductId());
+            if (!buyed) {
+                return Constants.SEND_REDIRECT + Constants.PRODUCTS_ENDPOINT;
+            }
+            
             model.addAttribute(Constants.PRODUCT, productService.findProductById(id));
             Comment comment = productService.findCommentByUserAndProduct(user, id);
             if(comment != null) {
@@ -71,13 +80,18 @@ public class CommentController {
                                   Locale locale, 
                                   Model model) {
         try {
+            boolean buyed = orderLineRepository.findIfUserBuyProduct(user.getUserId(), commentForm.getProductId());
+            if (!buyed) {
+                return Constants.SEND_REDIRECT + Constants.PRODUCTS_ENDPOINT;
+            }
+
             commentForm.setText(Html.escape(commentForm.getText()));
             if (commentForm.getRating() < 0) {
                 commentForm.setRating(0);
             } else if (commentForm.getRating() > 5) {
                 commentForm.setRating(5);
             }
-
+               
             productService.comment(user, commentForm.getProductId(), commentForm.getText(), commentForm.getRating());
             String message = messageSource.getMessage(Constants.PRODUCT_COMMENT_CREATED, new Object[0], locale);
             redirectAttributes.addFlashAttribute(Constants.SUCCESS_MESSAGE, message);

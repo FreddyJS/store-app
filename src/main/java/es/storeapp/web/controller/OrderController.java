@@ -70,11 +70,11 @@ public class OrderController {
                                  Locale locale) {
         try {
             Order order = orderService.findById(id);
-            if (order.getUser().getUserId().equals(user.getUserId())) {
-                model.addAttribute(Constants.ORDER, order);
-            } else {
+            if (!order.getUser().getUserId().equals(user.getUserId())) {
                 return Constants.SEND_REDIRECT + Constants.ORDERS_ENDPOINT;
             }
+            
+            model.addAttribute(Constants.ORDER, order);
         } catch (InstanceNotFoundException ex) {
             return Constants.SEND_REDIRECT + Constants.ORDERS_ENDPOINT;
         }
@@ -87,7 +87,12 @@ public class OrderController {
                                    Model model, 
                                    Locale locale) {
         try {
-            model.addAttribute(Constants.ORDER, orderService.findById(id));
+            Order order = orderService.findById(id);
+            if (!order.getUser().getUserId().equals(user.getUserId())) {
+                return Constants.SEND_REDIRECT + Constants.ORDERS_ENDPOINT;
+            }
+
+            model.addAttribute(Constants.ORDER, order);
         } catch (InstanceNotFoundException ex) {
             return errorHandlingUtils.handleInstanceNotFoundException(ex, model, locale);
         }
@@ -206,6 +211,11 @@ public class OrderController {
                                 Model model) throws InvalidStateException {
         Order order;
         try {
+            order = orderService.findById(id);
+            if (!order.getUser().getUserId().equals(user.getUserId())) {
+                return Constants.SEND_REDIRECT + Constants.ORDERS_ENDPOINT;
+            }
+
             order = orderService.cancel(user, id);
         } catch (InstanceNotFoundException ex) {
             return errorHandlingUtils.handleInstanceNotFoundException(ex, model, locale);
