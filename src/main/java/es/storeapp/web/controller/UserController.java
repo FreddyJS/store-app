@@ -178,7 +178,7 @@ public class UserController {
         }
         User user;
         try {
-            if (userProfileForm.getImage() != null) {
+            if (userProfileForm.getImage() != null && !userProfileForm.getImage().getOriginalFilename().equals("")) {
                 ImageIO.read(new File(userProfileForm.getImage().getOriginalFilename()));
             }
         } catch (Exception e) {
@@ -220,7 +220,7 @@ public class UserController {
         }
         User updatedUser;
         try {
-            if (userProfileForm.getImage() != null) {
+            if (userProfileForm.getImage() != null && !userProfileForm.getImage().getOriginalFilename().equals("")) {
                 ImageIO.read(new File(userProfileForm.getImage().getOriginalFilename()));
             }
         } catch (Exception e) {
