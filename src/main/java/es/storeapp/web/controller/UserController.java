@@ -191,7 +191,7 @@ public class UserController {
 
             user = userService.create(userProfileForm.getName(), userProfileForm.getEmail(),
                     userProfileForm.getPassword(), Html.escape(userProfileForm.getAddress()),
-                    userProfileForm.getImage() != null ? userProfileForm.getImage().getOriginalFilename() : null,
+                    userProfileForm.getImage() != null ? "avatar.png" : null,
                     userProfileForm.getImage() != null ? userProfileForm.getImage().getBytes() : null);
             if(logger.isDebugEnabled()) {
                 logger.debug(MessageFormat.format("User {0} with name {1} registered", user.getEmail(), user.getName()));
@@ -234,7 +234,7 @@ public class UserController {
             
             updatedUser = userService.update(user.getUserId(), userProfileForm.getName(), userProfileForm.getEmail(),
                     Html.escape(userProfileForm.getAddress()),
-                    userProfileForm.getImage() != null ? userProfileForm.getImage().getOriginalFilename() : null,
+                    userProfileForm.getImage() != null ? "avatar.png" : null,
                     userProfileForm.getImage() != null ? userProfileForm.getImage().getBytes() : null);
             
             if(logger.isDebugEnabled()) {
