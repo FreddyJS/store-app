@@ -137,6 +137,7 @@ public class UserController {
         User user;
         try {
             user = userService.login(loginForm.getEmail(), loginForm.getPassword());
+            logger.info(MessageFormat.format("User ''{0}'' logged in", user.getEmail()));
             session.setAttribute(Constants.USER_SESSION, user);
             if(logger.isDebugEnabled()) {
                 logger.debug(MessageFormat.format("User {0} logged in", user.getEmail()));

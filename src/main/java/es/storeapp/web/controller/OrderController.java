@@ -172,6 +172,11 @@ public class OrderController {
         }
         Order order;
         try {
+            order = orderService.findById(id);
+            if (!order.getUser().getUserId().equals(user.getUserId())) {
+                return Constants.SEND_REDIRECT + Constants.ORDERS_ENDPOINT;
+            }
+
             if(paymentForm.getDefaultCreditCard() != null && paymentForm.getDefaultCreditCard()) {
                 CreditCard card = user.getCard();
                 order = orderService.pay(user, id, card.getCard(), card.getCvv(), card.getExpirationMonth(),
@@ -183,6 +188,7 @@ public class OrderController {
                     session.setAttribute(Constants.USER_SESSION, user);
                 }   
             }
+            logger.info(MessageFormat.format("Order ''{0}'' paid", order.getOrderId()));
         } catch (InstanceNotFoundException ex) {
             return errorHandlingUtils.handleInstanceNotFoundException(ex, model, locale);
         }
