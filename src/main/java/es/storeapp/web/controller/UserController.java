@@ -6,6 +6,7 @@ import es.storeapp.business.exceptions.DuplicatedResourceException;
 import es.storeapp.business.exceptions.InstanceNotFoundException;
 import es.storeapp.business.exceptions.ServiceException;
 import es.storeapp.business.services.UserService;
+import es.storeapp.business.utils.Html;
 import es.storeapp.common.Constants;
 import es.storeapp.web.cookies.UserInfo;
 import es.storeapp.web.exceptions.ErrorHandlingUtils;
@@ -178,17 +179,17 @@ public class UserController {
         }
         User user;
         try {
-            if (userProfileForm.getImage() != null && !userProfileForm.getImage().getOriginalFilename().equals("")) {
-                ImageIO.read(new File(userProfileForm.getImage().getOriginalFilename()));
+            if (userProfileForm.getImage() != null && !"".equals(userProfileForm.getImage().getOriginalFilename())) {
+                if (ImageIO.read(userProfileForm.getImage().getInputStream()) == null) {
+                    errorHandlingUtils.handleInvalidFormError(result, 
+                        Constants.REGISTRATION_INVALID_PARAMS_MESSAGE, model, locale);
+                    
+                    return Constants.USER_PROFILE_PAGE;
+                }
             }
-        } catch (Exception e) {
-            // Tambien se podría crear el usuario sin la imagen y no devolver así el mensaje de error
-            return errorHandlingUtils.handleUnexpectedException(e, model);
-        }
-        
-        try {
+
             user = userService.create(userProfileForm.getName(), userProfileForm.getEmail(),
-                    userProfileForm.getPassword(), userProfileForm.getAddress(),
+                    userProfileForm.getPassword(), Html.escape(userProfileForm.getAddress()),
                     userProfileForm.getImage() != null ? userProfileForm.getImage().getOriginalFilename() : null,
                     userProfileForm.getImage() != null ? userProfileForm.getImage().getBytes() : null);
             if(logger.isDebugEnabled()) {
@@ -219,18 +220,19 @@ public class UserController {
             return Constants.USER_PROFILE_PAGE;
         }
         User updatedUser;
-        try {
-            if (userProfileForm.getImage() != null && !userProfileForm.getImage().getOriginalFilename().equals("")) {
-                ImageIO.read(new File(userProfileForm.getImage().getOriginalFilename()));
-            }
-        } catch (Exception e) {
-            // Tambien se podría crear el usuario sin la imagen y no devolver así el mensaje de error
-            return errorHandlingUtils.handleUnexpectedException(e, model);
-        }
 
         try {
+            if (userProfileForm.getImage() != null && !"".equals(userProfileForm.getImage().getOriginalFilename())) {
+                if (ImageIO.read(userProfileForm.getImage().getInputStream()) == null) {
+                    errorHandlingUtils.handleInvalidFormError(result, 
+                        Constants.UPDATE_PROFILE_INVALID_PARAMS_MESSAGE, model, locale);
+                    
+                    return Constants.USER_PROFILE_PAGE;
+                }
+            }
+            
             updatedUser = userService.update(user.getUserId(), userProfileForm.getName(), userProfileForm.getEmail(),
-                    userProfileForm.getAddress(),
+                    Html.escape(userProfileForm.getAddress()),
                     userProfileForm.getImage() != null ? userProfileForm.getImage().getOriginalFilename() : null,
                     userProfileForm.getImage() != null ? userProfileForm.getImage().getBytes() : null);
             
