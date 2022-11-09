@@ -7,6 +7,7 @@ import es.storeapp.business.entities.User;
 import es.storeapp.business.exceptions.InstanceNotFoundException;
 import es.storeapp.business.exceptions.InvalidStateException;
 import es.storeapp.business.services.OrderService;
+import es.storeapp.business.services.ProductService;
 import es.storeapp.common.Constants;
 import es.storeapp.web.exceptions.ErrorHandlingUtils;
 import es.storeapp.web.forms.OrderForm;
@@ -41,6 +42,9 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private ProductService productService;
 
     @Autowired
     private MessageSource messageSource;
@@ -132,8 +136,13 @@ public class OrderController {
         }
         Order order;
         try {
-            order = orderService.create(user, orderForm.getName(), orderForm.getAddress(), orderForm.getPrice(), 
-                    Arrays.asList(products));
+            int real_price = 0;
+            for (Long productId : products) {
+                Product product = productService.findProductById(productId);
+                real_price += product.getPrice();
+            }
+            
+            order = orderService.create(user, orderForm.getName(), orderForm.getAddress(), real_price, Arrays.asList(products));
         } catch (InstanceNotFoundException ex) {
             return errorHandlingUtils.handleInstanceNotFoundException(ex, model, locale);
         }
